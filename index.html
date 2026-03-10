@@ -3,507 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>氣泡排序法教學</title>
+  <title>排序演算法教學中心</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #0f0f1a;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
       color: #e0e0e0;
       min-height: 100vh;
-      padding: 30px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 600px;
     }
 
     h1 {
-      text-align: center;
-      font-size: 2rem;
+      font-size: 3.5rem;
       color: #7eb8f7;
-      margin-bottom: 6px;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(126, 184, 247, 0.3);
+      animation: fadeInDown 0.8s ease;
     }
 
     .subtitle {
-      text-align: center;
-      color: #888;
-      margin-bottom: 30px;
-      font-size: 0.95rem;
-    }
-
-    /* ── 說明區 ── */
-    .info-box {
-      background: #1a1a2e;
-      border-left: 4px solid #7eb8f7;
-      border-radius: 8px;
-      padding: 16px 20px;
-      max-width: 860px;
-      margin: 0 auto 30px;
-      line-height: 1.8;
-    }
-
-    .info-box h2 { color: #7eb8f7; margin-bottom: 8px; font-size: 1.1rem; }
-    .info-box ul { padding-left: 20px; }
-    .info-box li { margin-bottom: 4px; }
-
-    /* ── 控制區 ── */
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .controls label { font-size: 0.9rem; color: #aaa; }
-
-    .controls input[type=range] {
-      width: 130px;
-      accent-color: #7eb8f7;
-    }
-
-    button {
-      padding: 9px 22px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      font-weight: 600;
-      transition: opacity 0.2s;
-    }
-    button:hover { opacity: 0.85; }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    #btnGenerate  { background: #4a90d9; color: #fff; }
-    #btnSort      { background: #27ae60; color: #fff; }
-    #btnStep      { background: #e67e22; color: #fff; }
-    #btnReset     { background: #c0392b; color: #fff; }
-
-    /* ── 視覺化區 ── */
-    #visualizer {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 4px;
-      height: 280px;
-      max-width: 860px;
-      margin: 0 auto 24px;
-      padding: 10px;
-      background: #1a1a2e;
-      border-radius: 10px;
-    }
-
-    .bar {
-      flex: 1;
-      max-width: 48px;
-      min-width: 8px;
-      background: #4a90d9;
-      border-radius: 4px 4px 0 0;
-      position: relative;
-      transition: height 0.15s;
-    }
-
-    .bar.comparing { background: #f1c40f; }
-    .bar.swapping   { background: #e74c3c; }
-    .bar.sorted     { background: #27ae60; }
-
-    .bar-label {
-      position: absolute;
-      bottom: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
+      font-size: 1.3rem;
       color: #aaa;
+      margin-bottom: 40px;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.2s both;
     }
 
-    /* ── 步驟說明 ── */
-    #stepLog {
-      max-width: 860px;
-      margin: 10px auto 24px;
-      background: #1a1a2e;
-      border-radius: 8px;
-      padding: 14px 20px;
-      min-height: 50px;
+    .description {
+      background: rgba(26, 26, 46, 0.8);
+      border: 1px solid rgba(126, 184, 247, 0.3);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .description h2 {
+      color: #7eb8f7;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+
+    .description p {
+      color: #bbb;
+      margin-bottom: 10px;
       font-size: 0.95rem;
-      color: #ccc;
-      border-left: 4px solid #e67e22;
     }
 
-    #stepLog span.highlight { color: #f1c40f; font-weight: bold; }
-    #stepLog span.swap-word { color: #e74c3c; font-weight: bold; }
-    #stepLog span.ok-word   { color: #27ae60; font-weight: bold; }
-
-    /* ── 統計資訊 ── */
-    .stats {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.6s both;
     }
 
-    .stat-card {
-      background: #1a1a2e;
+    .feature {
+      background: rgba(74, 144, 217, 0.1);
+      border: 1px solid rgba(126, 184, 247, 0.3);
       border-radius: 8px;
-      padding: 12px 24px;
-      text-align: center;
-      min-width: 130px;
+      padding: 15px;
     }
 
-    .stat-card .num { font-size: 1.8rem; font-weight: bold; color: #7eb8f7; }
-    .stat-card .lbl { font-size: 0.8rem; color: #888; margin-top: 2px; }
-
-    /* ── 複雜度表格 ── */
-    .complexity {
-      max-width: 860px;
-      margin: 0 auto 30px;
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
     }
 
-    .complexity h2 { color: #7eb8f7; margin-bottom: 12px; font-size: 1.1rem; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .feature-text {
+      color: #bbb;
       font-size: 0.9rem;
     }
 
-    th {
-      background: #23234a;
-      color: #7eb8f7;
-      padding: 10px 14px;
-      text-align: left;
-    }
-
-    td { padding: 9px 14px; border-bottom: 1px solid #2a2a4a; }
-    tr:hover td { background: #1e1e38; }
-
-    /* ── 程式碼區 ── */
-    .code-section {
-      max-width: 860px;
-      margin: 0 auto 40px;
-    }
-
-    .code-section h2 { color: #7eb8f7; margin-bottom: 12px; font-size: 1.1rem; }
-
-    pre {
-      background: #12121f;
+    .start-btn {
+      display: inline-block;
+      padding: 16px 50px;
+      background: linear-gradient(135deg, #4a90d9 0%, #5ba0e6 100%);
+      color: #fff;
+      text-decoration: none;
+      border: none;
       border-radius: 8px;
-      padding: 20px;
-      overflow-x: auto;
-      font-size: 0.88rem;
-      line-height: 1.7;
-      border: 1px solid #2a2a4a;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.8s ease 0.8s both;
+      box-shadow: 0 4px 15px rgba(74, 144, 217, 0.3);
     }
 
-    .kw  { color: #c792ea; }
-    .fn  { color: #82aaff; }
-    .num-c { color: #f78c6c; }
-    .cmt { color: #546e7a; font-style: italic; }
-    .str { color: #c3e88d; }
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(74, 144, 217, 0.5);
+    }
+
+    .start-btn:active {
+      transform: translateY(0);
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      .features {
+        grid-template-columns: 1fr;
+      }
+      .start-btn {
+        padding: 14px 40px;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-<h1>🫧 氣泡排序法教學</h1>
-<p class="subtitle">Bubble Sort Interactive Visualizer</p>
+<div class="container">
+  <h1>🫧 氣泡排序法</h1>
+  <p class="subtitle">用動畫輕鬆理解排序演算法</p>
 
-<!-- 說明 -->
-<div class="info-box">
-  <h2>📖 什麼是氣泡排序法？</h2>
-  <ul>
-    <li>從陣列的第一個元素開始，<strong>兩兩比較相鄰元素</strong>，若左邊 > 右邊則交換。</li>
-    <li>每一輪結束後，<strong>當前未排序部分的最大值</strong>會「浮」到最右邊，如同氣泡上升。</li>
-    <li>重複 n-1 輪後，整個陣列完成排序。</li>
-    <li>優化技巧：若某一輪沒有任何交換，代表已排序完成，可<strong>提早結束</strong>。</li>
-  </ul>
+  <div class="description">
+    <h2>📚 歡迎來到互動教學！</h2>
+    <p>通過<strong>實時視覺化</strong>和<strong>詳細步驟解析</strong>，從零開始深入理解氣泡排序法的原理。</p>
+    <p>調整參數、觀察動畫、追蹤統計數據 — 全面掌握演算法！</p>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🎬</div>
+      <div class="feature-text">動畫視覺化</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⏱️</div>
+      <div class="feature-text">實時統計</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">👣</div>
+      <div class="feature-text">逐步執行</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">💻</div>
+      <div class="feature-text">程式碼示例</div>
+    </div>
+  </div>
+
+  <a href="bubble_sort.html" class="start-btn">開始教學 →</a>
 </div>
 
-<!-- 控制 -->
-<div class="controls">
-  <div>
-    <label>陣列大小：<span id="sizeVal">20</span></label><br>
-    <input type="range" id="sizeSlider" min="5" max="50" value="20">
-  </div>
-  <div>
-    <label>動畫速度：<span id="speedVal">中</span></label><br>
-    <input type="range" id="speedSlider" min="1" max="5" value="3">
-  </div>
-  <button id="btnGenerate">🔀 產生新陣列</button>
-  <button id="btnSort">▶ 開始排序</button>
-  <button id="btnStep">👣 單步執行</button>
-  <button id="btnReset">↺ 重置</button>
-</div>
-
-<!-- 視覺化 -->
-<div id="visualizer"></div>
-
-<!-- 步驟說明 -->
-<div id="stepLog">按「產生新陣列」開始！</div>
-
-<!-- 統計 -->
-<div class="stats">
-  <div class="stat-card">
-    <div class="num" id="cmpCount">0</div>
-    <div class="lbl">比較次數</div>
-  </div>
-  <div class="stat-card">
-    <div class="num" id="swpCount">0</div>
-    <div class="lbl">交換次數</div>
-  </div>
-  <div class="stat-card">
-    <div class="num" id="roundCount">0</div>
-    <div class="lbl">目前輪次</div>
-  </div>
-  <div class="stat-card">
-    <div class="num" id="statusText">待機</div>
-    <div class="lbl">狀態</div>
-  </div>
-</div>
-
-<!-- 複雜度 -->
-<div class="complexity">
-  <h2>📊 時間與空間複雜度</h2>
-  <table>
-    <thead>
-      <tr><th>情況</th><th>時間複雜度</th><th>空間複雜度</th><th>說明</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>最佳（已排序）</td><td>O(n)</td><td>O(1)</td><td>加入 swapped 旗標，一輪後即結束</td></tr>
-      <tr><td>平均</td><td>O(n²)</td><td>O(1)</td><td>一般亂序情況</td></tr>
-      <tr><td>最差（逆序）</td><td>O(n²)</td><td>O(1)</td><td>每一輪都需要全部交換</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- C 程式碼 -->
-<div class="code-section">
-  <h2>💻 C 語言實作（優化版）</h2>
-  <pre><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
-<span class="kw">#include</span> <span class="str">&lt;stdbool.h&gt;</span>
-
-<span class="kw">void</span> <span class="fn">bubbleSort</span>(<span class="kw">int</span> arr[], <span class="kw">int</span> n) {
-    <span class="kw">int</span> i, j, temp;
-    <span class="kw">bool</span> swapped;
-
-    <span class="kw">for</span> (i = <span class="num-c">0</span>; i &lt; n - <span class="num-c">1</span>; i++) {
-        swapped = <span class="kw">false</span>;
-        <span class="kw">for</span> (j = <span class="num-c">0</span>; j &lt; n - <span class="num-c">1</span> - i; j++) {
-            <span class="kw">if</span> (arr[j] &gt; arr[j + <span class="num-c">1</span>]) {
-                temp       = arr[j];
-                arr[j]     = arr[j + <span class="num-c">1</span>];
-                arr[j + <span class="num-c">1</span>] = temp;
-                swapped    = <span class="kw">true</span>;
-            }
-        }
-        <span class="cmt">// 若本輪沒有交換，陣列已排序完成</span>
-        <span class="kw">if</span> (!swapped) <span class="kw">break</span>;
-    }
-}
-
-<span class="kw">int</span> <span class="fn">main</span>() {
-    <span class="kw">int</span> arr[] = {<span class="num-c">64</span>, <span class="num-c">34</span>, <span class="num-c">25</span>, <span class="num-c">12</span>, <span class="num-c">22</span>, <span class="num-c">11</span>, <span class="num-c">90</span>};
-    <span class="kw">int</span> n = <span class="kw">sizeof</span>(arr) / <span class="kw">sizeof</span>(arr[<span class="num-c">0</span>]);
-
-    <span class="fn">bubbleSort</span>(arr, n);
-
-    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num-c">0</span>; i &lt; n; i++)
-        <span class="fn">printf</span>(<span class="str">"%d "</span>, arr[i]);
-    <span class="kw">return</span> <span class="num-c">0</span>;
-}</pre>
-</div>
-
-<script>
-  // ── 狀態 ──
-  let array = [];
-  let steps = [];       // 預先計算的所有步驟
-  let stepIndex = 0;
-  let sortedSet = new Set();
-  let comparisons = 0, swaps = 0, round = 0;
-  let autoTimer = null;
-  let isSorting = false;
-
-  const vis       = document.getElementById('visualizer');
-  const logEl     = document.getElementById('stepLog');
-  const cmpEl     = document.getElementById('cmpCount');
-  const swpEl     = document.getElementById('swpCount');
-  const rndEl     = document.getElementById('roundCount');
-  const statEl    = document.getElementById('statusText');
-  const btnGen    = document.getElementById('btnGenerate');
-  const btnSort   = document.getElementById('btnSort');
-  const btnStep   = document.getElementById('btnStep');
-  const btnReset  = document.getElementById('btnReset');
-  const sizeSlider  = document.getElementById('sizeSlider');
-  const speedSlider = document.getElementById('speedSlider');
-
-  const speedMap = { 1: 700, 2: 350, 3: 150, 4: 60, 5: 16 };
-  const speedLabel = { 1:'很慢', 2:'慢', 3:'中', 4:'快', 5:'極快' };
-
-  sizeSlider.addEventListener('input', () => {
-    document.getElementById('sizeVal').textContent = sizeSlider.value;
-  });
-  speedSlider.addEventListener('input', () => {
-    document.getElementById('speedVal').textContent = speedLabel[speedSlider.value];
-  });
-
-  // ── 產生陣列 ──
-  function generate() {
-    stopAuto();
-    const n = parseInt(sizeSlider.value);
-    array = Array.from({ length: n }, () => Math.floor(Math.random() * 95) + 5);
-    sortedSet.clear();
-    comparisons = swaps = round = stepIndex = 0;
-    steps = computeSteps([...array]);
-    updateStats();
-    statEl.textContent = '待機';
-    isSorting = false;
-    enableButtons(true);
-    renderBars(array, -1, -1);
-    logEl.innerHTML = `已產生 <span class="highlight">${n}</span> 個隨機數字，按「開始排序」或「單步執行」！`;
-  }
-
-  // ── 預先計算所有步驟 ──
-  function computeSteps(arr) {
-    const result = [];
-    const a = [...arr];
-    const n = a.length;
-    for (let i = 0; i < n - 1; i++) {
-      let swapped = false;
-      for (let j = 0; j < n - 1 - i; j++) {
-        result.push({ type: 'compare', j, i, arr: [...a], swapped: false });
-        if (a[j] > a[j + 1]) {
-          [a[j], a[j + 1]] = [a[j + 1], a[j]];
-          swapped = true;
-          result.push({ type: 'swap', j, i, arr: [...a] });
-        }
-      }
-      result.push({ type: 'sorted', sortedIdx: n - 1 - i, i, arr: [...a] });
-      if (!swapped) {
-        // 剩餘全部標記 sorted
-        result.push({ type: 'allSorted', arr: [...a] });
-        break;
-      }
-    }
-    result.push({ type: 'done', arr: [...a] });
-    return result;
-  }
-
-  // ── 執行一個步驟 ──
-  function doStep() {
-    if (stepIndex >= steps.length) return false;
-    const s = steps[stepIndex++];
-    array = [...s.arr];
-
-    if (s.type === 'compare') {
-      comparisons++;
-      round = s.i + 1;
-      renderBars(array, s.j, s.j + 1);
-      logEl.innerHTML = `第 <span class="highlight">${round}</span> 輪：比較 index <span class="highlight">${s.j}</span>（值 ${array[s.j]}）和 index <span class="highlight">${s.j+1}</span>（值 ${array[s.j+1]}）`;
-    } else if (s.type === 'swap') {
-      swaps++;
-      renderBars(array, s.j, s.j + 1, true);
-      logEl.innerHTML = `　　↳ <span class="swap-word">交換！</span> ${array[s.j+1]} ↔ ${array[s.j]}`;
-    } else if (s.type === 'sorted') {
-      sortedSet.add(s.sortedIdx);
-      renderBars(array, -1, -1);
-      logEl.innerHTML = `第 <span class="highlight">${round}</span> 輪結束，index <span class="highlight">${s.sortedIdx}</span>（值 ${array[s.sortedIdx]}）已歸位 ✅`;
-    } else if (s.type === 'allSorted') {
-      for (let k = 0; k < array.length; k++) sortedSet.add(k);
-      renderBars(array, -1, -1);
-      logEl.innerHTML = `<span class="ok-word">提早結束！</span> 本輪無任何交換，陣列已排序完成 🎉`;
-    } else if (s.type === 'done') {
-      for (let k = 0; k < array.length; k++) sortedSet.add(k);
-      renderBars(array, -1, -1);
-      logEl.innerHTML = `<span class="ok-word">排序完成！</span> 共比較 ${comparisons} 次，交換 ${swaps} 次 🎉`;
-      statEl.textContent = '完成';
-      isSorting = false;
-      enableButtons(true);
-      stopAuto();
-      updateStats();
-      return false;
-    }
-
-    updateStats();
-    return true;
-  }
-
-  // ── 自動排序 ──
-  function startAuto() {
-    if (isSorting) return;
-    isSorting = true;
-    statEl.textContent = '排序中';
-    enableButtons(false);
-    btnReset.disabled = false;
-
-    function tick() {
-      const cont = doStep();
-      if (cont) autoTimer = setTimeout(tick, speedMap[speedSlider.value]);
-    }
-    tick();
-  }
-
-  function stopAuto() {
-    clearTimeout(autoTimer);
-    autoTimer = null;
-    isSorting = false;
-  }
-
-  // ── 渲染 ──
-  function renderBars(arr, ci, cj, isSwap = false) {
-    const maxVal = Math.max(...arr);
-    vis.innerHTML = '';
-    arr.forEach((v, idx) => {
-      const bar = document.createElement('div');
-      bar.className = 'bar';
-      bar.style.height = `${(v / maxVal) * 92}%`;
-
-      if (sortedSet.has(idx)) {
-        bar.classList.add('sorted');
-      } else if (idx === ci || idx === cj) {
-        bar.classList.add(isSwap ? 'swapping' : 'comparing');
-      }
-
-      if (arr.length <= 30) {
-        const lbl = document.createElement('span');
-        lbl.className = 'bar-label';
-        lbl.textContent = v;
-        bar.appendChild(lbl);
-      }
-
-      vis.appendChild(bar);
-    });
-  }
-
-  // ── 統計 ──
-  function updateStats() {
-    cmpEl.textContent = comparisons;
-    swpEl.textContent = swaps;
-    rndEl.textContent = round;
-  }
-
-  function enableButtons(enable) {
-    btnGen.disabled   = !enable;
-    btnSort.disabled  = !enable;
-    btnStep.disabled  = !enable;
-  }
-
-  // ── 事件綁定 ──
-  btnGen.addEventListener('click', generate);
-  btnSort.addEventListener('click', startAuto);
-  btnStep.addEventListener('click', () => {
-    if (!isSorting) {
-      statEl.textContent = '單步中';
-      enableButtons(false);
-      btnStep.disabled = false;
-      btnReset.disabled = false;
-      doStep();
-    }
-  });
-  btnReset.addEventListener('click', () => {
-    stopAuto();
-    generate();
-  });
-
-  // ── 初始化 ──
-  generate();
-</script>
 </body>
+</html></body>
 </html>
